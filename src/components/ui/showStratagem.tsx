@@ -1,5 +1,5 @@
 import { SvgProps } from "react-native-svg";
-import { Animated, Easing, useAnimatedValue } from "react-native";
+import { Animated, useAnimatedValue } from "react-native";
 import { useEffect } from "react";
 import React from "react";
 

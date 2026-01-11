@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { Platform, StyleSheet, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
@@ -45,9 +45,9 @@ export default function TabTwoScreen() {
         console.log(stratagem);
         clear();
 
-        if (stratagem.icon) {
-            // Pass
-        }
+        // if (stratagem.icon) {
+        //     // Pass
+        // }
 
         if (stratagem.audio) {
             // JS should really get better random functions

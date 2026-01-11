@@ -1,6 +1,6 @@
 import { View, useWindowDimensions, Image, Platform } from "react-native";
 import * as ScreenOrientation from "expo-screen-orientation";
-import { createAudioPlayer, setAudioModeAsync } from "expo-audio";
+import { setAudioModeAsync, useAudioPlayer } from "expo-audio";
 import { useNavigation } from "expo-router";
 import { useEffect, useState } from "react";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
@@ -15,6 +15,7 @@ import { Direction, lookupStratByCode } from "@/constants/stratagems";
 import { SwipeDetector } from "@/components/SwipeDetector";
 import { ShowOnSwipe } from "@/components/ui/showOnSwipe";
 import { ShowStratagem } from "@/components/ui/showStratagem";
+import { VOICELINES } from "@/constants/voicelines";
 
 if (Platform.OS === "ios") {
     setAudioModeAsync({
@@ -28,6 +29,8 @@ export default function DesignTest() {
     const { width, height: screenHeight } = useWindowDimensions();
     const [stratagemImage, setStratagemImage] = useState<React.FC<SvgProps>>();
     const [locked, setLocked] = useState(false);
+
+    const player = useAudioPlayer("url", {});
 
     // Rotate and lock the screen
     onScreenLoad("(tabs)/designTest", () => {
@@ -105,23 +108,27 @@ export default function DesignTest() {
         clear();
         setLocked(true);
 
-        if (stratagem.audio) {
-            // JS should really get better random functions
+        // Audio time
+        // JS should really get better random functions
 
-            const startingPromise = Promise.resolve(
-                console.log("Starting playing audio")
-            );
+        const audioSequence = VOICELINES[stratagem.group];
+        const startingPromise = Promise.resolve(
+            console.log("Starting playing audio")
+        );
 
-            stratagem.audio
-                .reduce((prom, audio) => {
-                    return prom.then(() =>
+        audioSequence
+            .reduce(
+                (prom, lines) =>
+                    prom.then(() =>
                         playAudio(
-                            audio[Math.floor(Math.random() * audio.length)]
+                            lines[Math.floor(Math.random() * lines.length)]
                         )
-                    );
-                }, startingPromise)
-                .then(() => console.log("Done playing audio"));
-        }
+                    ),
+                startingPromise
+            )
+            .then(() => console.log("Done playing audio"));
+
+        // Image time
 
         if (stratagem.icon) {
             setStratagemImage(stratagem.icon);
@@ -134,8 +141,8 @@ export default function DesignTest() {
     async function playAudio(src: number) {
         // Forced to use a different library grrr
         // and it's just more annoying
-        const player = createAudioPlayer(src, {});
-        player.seekTo(0);
+
+        player.replace(src);
         player.play();
 
         return new Promise<void>((resolve) => {
@@ -146,7 +153,7 @@ export default function DesignTest() {
             });
         }).finally(() => {
             // Resource cleanup
-            player.release();
+            // player.release();
         });
 
         // const sound = await Audio.Sound.createAsync(src);

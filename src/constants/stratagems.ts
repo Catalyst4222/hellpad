@@ -3,21 +3,34 @@ import { SvgProps } from "react-native-svg";
 // 'equipment'? backpacks?
 
 export enum StratagemGroup {
-    FORTIFICATION,
-    SENTRY,
-    SUPPORT_WEAPON, // 'freedom requires firepower'
-    BACKPACK, // 'equipment'?, tac-pack
-    VEHICLE,
-    WALKER,
-    RESUPPLY, // resupply/supplies
-    REINFORCEMENTS,
-    HELLBOMB,
-    EAGLE, // 'requesting air support'
-    EAGLE_REARM,
-    ORBITAL,
-    SOS,
+    REINFORCEMENTS = "REINFORCEMENTS",
+    SOS = "SOS",
+    RESUPPLY = "RESUPPLY", // resupply/supplies
+    EAGLE_REARM = "EAGLE_REARM",
 
-    UNKNOWN,
+    OBJECTIVE = "OBJECTIVE",
+    FLARE = "FLARE",
+    HELLBOMB = "HELLBOMB",
+
+    ORBITAL = "ORBITAL",
+    EAGLE = "EAGLE", // 'requesting air support'
+
+    SUPPORT_WEAPON = "SUPPORT_WEAPON", // 'freedom requires firepower'
+    BACKPACK = "BACKPACK", // 'equipment'?, tac-pack
+    WALKER = "WALKER",
+    VEHICLE = "VEHICLE",
+
+    FORTIFICATION = "FORTIFICATION",
+    SENTRY = "SENTRY",
+
+    UNKNOWN = "UNKNOWN",
+}
+export enum Direction {
+    LEFT = "LEFT",
+    RIGHT = "RIGHT",
+    UP = "UP",
+    DOWN = "DOWN",
+    TAP = "TAP",
 }
 
 type Stratagem = {
@@ -31,30 +44,20 @@ type Stratagem = {
     icon: ReturnType<typeof require> & React.FC<SvgProps>;
 };
 
-export enum Direction {
-    LEFT = "LEFT",
-    RIGHT = "RIGHT",
-    UP = "UP",
-    DOWN = "DOWN",
-    TAP = "TAP",
-}
-
 export function lookupStratByCode(code: Direction[]) {
-    const matches = stratagems
-        .map((stratagem) => {
-            if (code.length != stratagem.code.length) return undefined;
+    const matches = STRATAGEMS.map((stratagem) => {
+        if (code.length != stratagem.code.length) return undefined;
 
-            if (
-                code
-                    .slice(-stratagem.code.length)
-                    .every((direction, i) => direction == stratagem.code[i])
-            ) {
-                return stratagem;
-            }
+        if (
+            code
+                .slice(-stratagem.code.length)
+                .every((direction, i) => direction == stratagem.code[i])
+        ) {
+            return stratagem;
+        }
 
-            return undefined;
-        })
-        .filter((item) => item !== undefined);
+        return undefined;
+    }).filter((item) => item !== undefined);
 
     if (matches.length > 1) {
         console.warn(`Multiple hits for stratagem code ${code}`);
@@ -63,24 +66,10 @@ export function lookupStratByCode(code: Direction[]) {
     return matches.at(0);
 }
 
-const eagleRearmSFX = [
-    require("../assets/stratagems/audio/eagle1_leaving_combat_zone_to_resupply.mp3"),
-    require("../assets/stratagems/audio/super_earths_finest.mp3"),
-    require("../assets/stratagems/audio/weaponized_freedom.mp3"),
-    require("../assets/stratagems/audio/super_earths_finest.mp3"),
-];
-
-const eagleVoiceSFX = [
-    require("../assets/stratagems/audio/unleashing_democracy.mp3"),
-    require("../assets/stratagems/audio/democracys_on_its_way.mp3"),
-    require("../assets/stratagems/audio/here_comes_the_cavalry.mp3"),
-    require("../assets/stratagems/audio/an_eagle_never_misses.mp3"),
-];
-
 // TODO: Add orbital, support, backpack, resupply, flag, hellbomb, etc. sfx
 // add new stratagems and mission strats
 
-export const stratagems: Stratagem[] = [
+export const STRATAGEMS: readonly Stratagem[] = [
     {
         name: "Eagle 500kg",
         group: StratagemGroup.EAGLE,
@@ -91,7 +80,6 @@ export const stratagems: Stratagem[] = [
             Direction.DOWN,
             Direction.DOWN,
         ],
-        audio: [eagleVoiceSFX],
         icon: require("../assets/stratagems/icons/Eagle 500KG Bomb.svg")
             .default,
     },
@@ -106,46 +94,9 @@ export const stratagems: Stratagem[] = [
             Direction.RIGHT,
             Direction.UP,
         ],
-        audio: [
-            require("../assets/stratagems/audio/callling_in_reinforcements.mp3"),
-        ],
         icon: require("../assets/stratagems/icons/Reinforce.svg").default,
     },
-    {
-        name: "Resupply",
-        group: StratagemGroup.RESUPPLY,
-        code: [Direction.DOWN, Direction.DOWN, Direction.UP, Direction.RIGHT],
-        icon: require("../assets/stratagems/icons/Resupply.svg").default,
-    },
-    {
-        name: "SEAF Artillery",
-        group: StratagemGroup.UNKNOWN,
-        code: [Direction.RIGHT, Direction.UP, Direction.UP, Direction.DOWN],
-        icon: require("../assets/stratagems/icons/SEAF Artillery.svg").default,
-    },
-    {
-        name: "Super Earth Flag",
-        group: StratagemGroup.SUPPORT_WEAPON,
-        code: [Direction.DOWN, Direction.UP, Direction.DOWN, Direction.UP],
-        icon: require("../assets/stratagems/icons/Super Earth Flag.svg")
-            .default,
-    },
-    {
-        name: "Hellbomb",
-        group: StratagemGroup.HELLBOMB,
-        code: [
-            Direction.DOWN,
-            Direction.UP,
-            Direction.LEFT,
-            Direction.DOWN,
-            Direction.UP,
-            Direction.RIGHT,
-            Direction.DOWN,
-            Direction.UP,
-            Direction.LEFT,
-        ],
-        icon: require("../assets/stratagems/icons/Hellbomb.svg").default,
-    },
+
     {
         name: "Portable Hellbomb",
         group: StratagemGroup.BACKPACK,
@@ -158,19 +109,6 @@ export const stratagems: Stratagem[] = [
         ],
         icon: require("../assets/stratagems/icons/Hellbomb Portable.svg")
             .default,
-    },
-    {
-        name: "Eagle Rearm",
-        group: StratagemGroup.EAGLE_REARM,
-        code: [
-            Direction.UP,
-            Direction.UP,
-            Direction.LEFT,
-            Direction.UP,
-            Direction.RIGHT,
-        ],
-        audio: [eagleRearmSFX],
-        icon: require("../assets/stratagems/icons/Eagle Rearm.svg").default,
     },
     {
         name: "Machine Gun",
@@ -443,7 +381,6 @@ export const stratagems: Stratagem[] = [
         name: "Eagle Strafing Run",
         group: StratagemGroup.EAGLE,
         code: [Direction.UP, Direction.RIGHT, Direction.RIGHT],
-        audio: [eagleVoiceSFX],
         icon: require("../assets/stratagems/icons/Eagle Strafing Run.svg")
             .default,
     },
@@ -451,7 +388,6 @@ export const stratagems: Stratagem[] = [
         name: "Eagle Airstrike",
         group: StratagemGroup.EAGLE,
         code: [Direction.UP, Direction.RIGHT, Direction.DOWN, Direction.RIGHT],
-        audio: [eagleVoiceSFX],
         icon: require("../assets/stratagems/icons/Eagle Airstrike.svg").default,
     },
     {
@@ -464,7 +400,6 @@ export const stratagems: Stratagem[] = [
             Direction.DOWN,
             Direction.RIGHT,
         ],
-        audio: [eagleVoiceSFX],
         icon: require("../assets/stratagems/icons/Eagle Cluster Bomb.svg")
             .default,
     },
@@ -472,7 +407,6 @@ export const stratagems: Stratagem[] = [
         name: "Eagle Napalm Airstrike",
         group: StratagemGroup.EAGLE,
         code: [Direction.UP, Direction.RIGHT, Direction.DOWN, Direction.UP],
-        audio: [eagleVoiceSFX],
         icon: require("../assets/stratagems/icons/Eagle Napalm Airstrike.svg")
             .default,
     },
@@ -492,7 +426,6 @@ export const stratagems: Stratagem[] = [
         name: "Eagle Smoke Strike",
         group: StratagemGroup.EAGLE,
         code: [Direction.UP, Direction.RIGHT, Direction.UP, Direction.DOWN],
-        audio: [eagleVoiceSFX],
         icon: require("../assets/stratagems/icons/Eagle Smoke Strike.svg")
             .default,
     },
@@ -500,7 +433,6 @@ export const stratagems: Stratagem[] = [
         name: "Eagle 110mm Rocket Pods",
         group: StratagemGroup.EAGLE,
         code: [Direction.UP, Direction.RIGHT, Direction.UP, Direction.LEFT],
-        audio: [eagleVoiceSFX],
         icon: require("../assets/stratagems/icons/Eagle 110MM Rocket Pods.svg")
             .default,
     },
@@ -1073,4 +1005,190 @@ export const stratagems: Stratagem[] = [
         icon: require("../assets/stratagems/icons/Guard Dog Hot Dog.svg")
             .default,
     },
-];
+
+    // Mission-specific stratagems
+    {
+        name: "Reinforments",
+        group: StratagemGroup.REINFORCEMENTS,
+
+        code: [
+            Direction.UP,
+            Direction.DOWN,
+            Direction.LEFT,
+            Direction.RIGHT,
+            Direction.UP,
+        ],
+        icon: require("../assets/stratagems/icons/Reinforce.svg").default,
+    },
+    {
+        name: "SOS Beacon",
+        group: StratagemGroup.SOS,
+        code: [Direction.UP, Direction.DOWN, Direction.RIGHT, Direction.UP],
+        icon: require("../assets/stratagems/icons/SOS Beacon.svg").default,
+    },
+
+    {
+        name: "Resupply",
+        group: StratagemGroup.RESUPPLY,
+        code: [Direction.DOWN, Direction.DOWN, Direction.UP, Direction.RIGHT],
+        icon: require("../assets/stratagems/icons/Resupply.svg").default,
+    },
+    {
+        name: "Eagle Rearm",
+        group: StratagemGroup.EAGLE_REARM,
+        code: [
+            Direction.UP,
+            Direction.UP,
+            Direction.LEFT,
+            Direction.UP,
+            Direction.RIGHT,
+        ],
+        icon: require("../assets/stratagems/icons/Eagle Rearm.svg").default,
+    },
+    // {
+    //     name: "SSSD Delivery",
+    //     group: StratagemGroup.OBJECTIVE,
+    //     code: [
+    //         Direction.DOWN,
+    //         Direction.DOWN,
+    //         Direction.DOWN,
+    //         Direction.UP,
+    //         Direction.UP,
+    //     ],
+    //     icon: require("../assets/stratagems/icons/Upload data.svg").default,
+    // },
+    {
+        name: "Prospecting Drill",
+        group: StratagemGroup.OBJECTIVE,
+        code: [
+            Direction.DOWN,
+            Direction.DOWN,
+            Direction.LEFT,
+            Direction.RIGHT,
+            Direction.DOWN,
+            Direction.DOWN,
+        ],
+        icon: require("../assets/stratagems/icons/Prospecting Drill.svg")
+            .default,
+    },
+    {
+        name: "Super Earth Flag",
+        group: StratagemGroup.SUPPORT_WEAPON,
+        code: [Direction.DOWN, Direction.UP, Direction.DOWN, Direction.UP],
+        icon: require("../assets/stratagems/icons/Super Earth Flag.svg")
+            .default,
+    },
+    {
+        name: "Hellbomb",
+        group: StratagemGroup.HELLBOMB,
+        code: [
+            Direction.DOWN,
+            Direction.UP,
+            Direction.LEFT,
+            Direction.DOWN,
+            Direction.UP,
+            Direction.RIGHT,
+            Direction.DOWN,
+            Direction.UP,
+            Direction.LEFT,
+        ],
+        icon: require("../assets/stratagems/icons/Hellbomb.svg").default,
+    },
+    {
+        name: "Upload Data",
+        group: StratagemGroup.OBJECTIVE,
+        code: [
+            Direction.DOWN,
+            Direction.DOWN,
+            Direction.DOWN,
+            Direction.UP,
+            Direction.UP,
+        ],
+        icon: require("../assets/stratagems/icons/Upload Data.svg").default,
+    },
+    {
+        name: "Seismic Probe",
+        group: StratagemGroup.OBJECTIVE,
+        code: [
+            Direction.UP,
+            Direction.UP,
+            Direction.LEFT,
+            Direction.RIGHT,
+            Direction.DOWN,
+            Direction.DOWN,
+        ],
+        icon: require("../assets/stratagems/icons/Seismic Probe.svg").default,
+    },
+    {
+        name: "Orbital Illumination Flare",
+        group: StratagemGroup.FLARE,
+        code: [
+            Direction.RIGHT,
+            Direction.RIGHT,
+            Direction.LEFT,
+            Direction.LEFT,
+        ],
+        icon: require("../assets/stratagems/icons/Orbital Illumination Flare.svg")
+            .default,
+    },
+    {
+        name: "SEAF Artillery",
+        group: StratagemGroup.UNKNOWN,
+        code: [Direction.RIGHT, Direction.UP, Direction.UP, Direction.DOWN],
+        icon: require("../assets/stratagems/icons/SEAF Artillery.svg").default,
+    },
+    {
+        name: "Dark Fluid Vessel",
+        group: StratagemGroup.OBJECTIVE,
+        code: [
+            Direction.UP,
+            Direction.LEFT,
+            Direction.RIGHT,
+            Direction.DOWN,
+            Direction.UP,
+            Direction.UP,
+        ],
+        icon: require("../assets/stratagems/icons/Dark Fluid Vessel.svg")
+            .default,
+    },
+    {
+        name: "Tectonic Drill",
+        group: StratagemGroup.OBJECTIVE,
+        code: [
+            Direction.UP,
+            Direction.DOWN,
+            Direction.UP,
+            Direction.DOWN,
+            Direction.UP,
+            Direction.DOWN,
+        ],
+        icon: require("../assets/stratagems/icons/Tectonic Drill.svg").default,
+    },
+    {
+        name: "Hive Breaker Drill",
+        group: StratagemGroup.OBJECTIVE,
+        code: [
+            Direction.LEFT,
+            Direction.UP,
+            Direction.DOWN,
+            Direction.RIGHT,
+            Direction.DOWN,
+            Direction.DOWN,
+        ],
+        icon: require("../assets/stratagems/icons/Hive Breaker Drill.svg")
+            .default,
+    },
+    {
+        name: "Cargo Container",
+        group: StratagemGroup.OBJECTIVE,
+        code: [
+            Direction.UP,
+            Direction.UP,
+            Direction.DOWN,
+            Direction.DOWN,
+            Direction.RIGHT,
+            Direction.DOWN,
+        ],
+        icon: require("../assets/stratagems/icons/Cargo Container.svg").default,
+    },
+] as const;
