@@ -54,12 +54,8 @@ export default function TabTwoScreen() {
 
             // Note!!!! This doens't work on silence!!!
             stratagem.audio.reduce((prom, audio) => {
-                return prom.then(() => 
-                    playAudio(
-                        audio[
-                            Math.floor(Math.random() * audio.length)
-                        ]
-                    )
+                return prom.then(() =>
+                    playAudio(audio[Math.floor(Math.random() * audio.length)])
                 );
             }, Promise.resolve());
         }
@@ -67,7 +63,6 @@ export default function TabTwoScreen() {
 
     // Audio is stupid and only works in async
     async function playAudio(src: number) {
-
         // Forced to use a different library grrr
         // and it's just more annoying
         const player = createAudioPlayer(src, {});
@@ -75,13 +70,11 @@ export default function TabTwoScreen() {
         player.play();
 
         return new Promise<void>((resolve) => {
-
             player.addListener("playbackStatusUpdate", (status) => {
                 if (status.didJustFinish) {
                     resolve();
                 }
             });
-
         }).finally(() => {
             // Resource cleanup
             player.release();

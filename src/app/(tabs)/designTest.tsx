@@ -7,7 +7,6 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { SvgProps } from "react-native-svg";
 
-
 import { Landscape } from "@/components/Fullscreen";
 import { onScreenLoad } from "@/hooks/onScreenLoad";
 import { shakeListener } from "@/util/shake";
@@ -19,7 +18,7 @@ import { ShowStratagem } from "@/components/ui/showStratagem";
 
 if (Platform.OS === "ios") {
     setAudioModeAsync({
-        playsInSilentMode: true
+        playsInSilentMode: true,
     });
 }
 
@@ -27,8 +26,8 @@ export default function DesignTest() {
     const navigation = useNavigation();
     const [sequence, append, clear] = useSequence<Direction>({ limit: 10 });
     const { width, height: screenHeight } = useWindowDimensions();
-    const [ stratagemImage, setStratagemImage ] = useState<React.FC<SvgProps>>();
-    const [ locked, setLocked ] = useState(false);
+    const [stratagemImage, setStratagemImage] = useState<React.FC<SvgProps>>();
+    const [locked, setLocked] = useState(false);
 
     // Rotate and lock the screen
     onScreenLoad("(tabs)/designTest", () => {
@@ -41,7 +40,7 @@ export default function DesignTest() {
             );
     });
 
-    // Hide the tab bar at the bottom 
+    // Hide the tab bar at the bottom
     onScreenLoad(
         "(tabs)/designTest",
         () => {
@@ -98,9 +97,9 @@ export default function DesignTest() {
             } else {
                 setStratagemImage(undefined);
             }
-            
+
             return;
-        };
+        }
 
         // console.log(stratagem);
         clear();
@@ -108,18 +107,20 @@ export default function DesignTest() {
 
         if (stratagem.audio) {
             // JS should really get better random functions
-            
-            const startingPromise = Promise.resolve(console.log("Starting playing audio"));
 
-            stratagem.audio.reduce((prom, audio) => {
-                return prom.then(() => 
-                    playAudio(
-                        audio[
-                            Math.floor(Math.random() * audio.length)
-                        ]
-                    )
-                );
-            }, startingPromise).then(() => console.log("Done playing audio"));
+            const startingPromise = Promise.resolve(
+                console.log("Starting playing audio")
+            );
+
+            stratagem.audio
+                .reduce((prom, audio) => {
+                    return prom.then(() =>
+                        playAudio(
+                            audio[Math.floor(Math.random() * audio.length)]
+                        )
+                    );
+                }, startingPromise)
+                .then(() => console.log("Done playing audio"));
         }
 
         if (stratagem.icon) {
@@ -127,12 +128,10 @@ export default function DesignTest() {
         } else {
             console.log("No stratagem icon! Code may not unlock!");
         }
-
     }, [JSON.stringify(sequence)]);
 
     // Audio is stupid and only works in async
     async function playAudio(src: number) {
-
         // Forced to use a different library grrr
         // and it's just more annoying
         const player = createAudioPlayer(src, {});
@@ -140,13 +139,11 @@ export default function DesignTest() {
         player.play();
 
         return new Promise<void>((resolve) => {
-
             player.addListener("playbackStatusUpdate", (status) => {
                 if (status.didJustFinish) {
                     resolve();
                 }
             });
-
         }).finally(() => {
             // Resource cleanup
             player.release();
@@ -166,7 +163,6 @@ export default function DesignTest() {
         [clear]
     );
 
-
     return (
         <Landscape
             onExit={() => {
@@ -174,7 +170,8 @@ export default function DesignTest() {
             }}
         >
             <SwipeDetector {...swipes}>
-                <ShowOnSwipe enabled={!locked}
+                <ShowOnSwipe
+                    enabled={!locked}
                     right={
                         <MaterialCommunityIcons
                             name="arrow-right-bold"
@@ -215,11 +212,14 @@ export default function DesignTest() {
                         source={require("../../assets/images/Helldivers-2-Logo.png")}
                     />
                     <View style={{ flex: 1 }}>
-                        <ShowStratagem stratagem={stratagemImage} onEnd={() => {
-                            // clear();
-                            setLocked(false);
-                        }} />
-                    </View> 
+                        <ShowStratagem
+                            stratagem={stratagemImage}
+                            onEnd={() => {
+                                // clear();
+                                setLocked(false);
+                            }}
+                        />
+                    </View>
                     <Image
                         style={{
                             width: width * 0.95,

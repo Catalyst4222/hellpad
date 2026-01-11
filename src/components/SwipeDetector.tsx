@@ -34,7 +34,11 @@ export function SwipeDetector({
     });
 
     return (
-        <View onTouchStart={onTouchStart} onTouchEnd={onTouchEnd} style={{flex: 1}}>
+        <View
+            onTouchStart={onTouchStart}
+            onTouchEnd={onTouchEnd}
+            style={{ flex: 1 }}
+        >
             {children}
         </View>
     );

@@ -3,18 +3,21 @@ import { Animated, Easing, useAnimatedValue } from "react-native";
 import { useEffect } from "react";
 import React from "react";
 
-export function ShowStratagem({stratagem: Stratagem, onEnd}: {stratagem?: React.FC<SvgProps> | JSX.Element, onEnd?: () => void}) {
-
+export function ShowStratagem({
+    stratagem: Stratagem,
+    onEnd,
+}: {
+    stratagem?: React.FC<SvgProps> | JSX.Element;
+    onEnd?: () => void;
+}) {
     const opacity = useAnimatedValue(0);
     const rotation = useAnimatedValue(0);
 
     useEffect(() => {
-
         // fadeIn();
 
         // return;
         Animated.sequence([
-
             Animated.timing(opacity, {
                 toValue: 1,
                 duration: 150,
@@ -24,17 +27,14 @@ export function ShowStratagem({stratagem: Stratagem, onEnd}: {stratagem?: React.
             Animated.timing(rotation, {
                 toValue: 0,
                 duration: 1000,
-                useNativeDriver: true
+                useNativeDriver: true,
             }),
             Animated.timing(opacity, {
                 toValue: 0,
                 duration: 250,
                 useNativeDriver: true,
-            })
-
+            }),
         ]).start((finished) => finished && onEnd && onEnd());
-
-
 
         // Cleanup
         return () => {
@@ -54,14 +54,19 @@ export function ShowStratagem({stratagem: Stratagem, onEnd}: {stratagem?: React.
         element = <Stratagem />;
     }
 
-    return <Animated.View style={{
-        opacity: opacity,
-        transform: [{
-            rotate: "0deg"
-        }]
-    }}>
-        {/* {Stratagem ? <Stratagem /> : <></>} */}
-        {element}
-    </Animated.View>;
-
+    return (
+        <Animated.View
+            style={{
+                opacity: opacity,
+                transform: [
+                    {
+                        rotate: "0deg",
+                    },
+                ],
+            }}
+        >
+            {/* {Stratagem ? <Stratagem /> : <></>} */}
+            {element}
+        </Animated.View>
+    );
 }

@@ -86,7 +86,11 @@ export function ShowOnSwipe({
     const { height } = useWindowDimensions();
 
     return (
-        <View onTouchStart={onTouchStart} onTouchEnd={onTouchEnd} style={{flex: 1}}>
+        <View
+            onTouchStart={onTouchStart}
+            onTouchEnd={onTouchEnd}
+            style={{ flex: 1 }}
+        >
             {children}
             <View
                 style={{
@@ -103,9 +107,7 @@ export function ShowOnSwipe({
                         style={{
                             position: "absolute",
                             zIndex: 3,
-                            top:
-                                height / 2 -
-                                elemHeight / 2,
+                            top: height / 2 - elemHeight / 2,
                         }}
                         onLayout={(event) => {
                             setHeight(event.nativeEvent.layout.height);
