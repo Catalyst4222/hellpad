@@ -7,7 +7,7 @@ import { IconSymbol } from "@/components/ui/IconSymbol";
 import TabBarBackground from "@/components/ui/TabBarBackground";
 import { Colors } from "@/constants/Colors";
 import { useColorScheme } from "@/hooks/useColorScheme";
-import { FontAwesome, MaterialIcons, Octicons } from "@expo/vector-icons";
+import { MaterialIcons } from "@expo/vector-icons";
 
 export default function TabLayout() {
     const colorScheme = useColorScheme();
@@ -37,7 +37,7 @@ export default function TabLayout() {
                     ),
                 }}
             />
-            <Tabs.Screen
+            {/* <Tabs.Screen
                 name="swipes"
                 options={{
                     title: "Swipes",
@@ -63,7 +63,7 @@ export default function TabLayout() {
                         <Octicons name="search" size={24} color={color} />
                     ),
                 }}
-            />
+            /> */}
             <Tabs.Screen
                 name="designTest"
                 options={{
