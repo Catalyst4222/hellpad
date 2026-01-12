@@ -1090,7 +1090,6 @@ export const STRATAGEMS: readonly Stratagem[] = [
             Direction.RIGHT,
             Direction.DOWN,
             Direction.UP,
-            Direction.LEFT,
         ],
         icon: require("../assets/stratagems/icons/Hellbomb.svg").default,
     },
